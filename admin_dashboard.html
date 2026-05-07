@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<h2>Admin Dashboard - Verify Consultants</h2>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning">
+                <h4>Pending Verification ({{ pending_consultants|length }})</h4>
+            </div>
+            <div class="card-body">
+                {% if pending_consultants %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Profession</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>License Number</th>
+                                    <th>Experience</th>
+                                    <th>Registered On</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consultant in pending_consultants %}
+                                    <tr>
+                                        <td>{{ consultant.full_name }}</td>
+                                        <td>{{ consultant.profession }}</td>
+                                        <td>{{ consultant.email }}</td>
+                                        <td>{{ consultant.phone }}</td>
+                                        <td><strong class="text-primary">{{ consultant.license_number }}</strong></td>
+                                        <td>{{ consultant.experience }} years</td>
+                                        <td>{{ consultant.created_at.strftime('%Y-%m-%d') }}</td>
+                                        <td>
+                                            <a href="{{ url_for('verify_consultant', consultant_id=consultant.id) }}" 
+                                               class="btn btn-success btn-sm" 
+                                               onclick="return confirm('Verify this consultant?')">✓ Verify</a>
+                                            <a href="{{ url_for('reject_consultant', consultant_id=consultant.id) }}" 
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Reject and remove this consultant?')">✗ Reject</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <p class="mb-0">No pending verifications. All consultants are verified!</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4>Verified Consultants ({{ verified_consultants|length }})</h4>
+            </div>
+            <div class="card-body">
+                {% if verified_consultants %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Profession</th>
+                                    <th>Email</th>
+                                    <th>License Number</th>
+                                    <th>Experience</th>
+                                    <th>Verified On</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for consultant in verified_consultants %}
+                                    <tr>
+                                        <td>{{ consultant.full_name }}</td>
+                                        <td>{{ consultant.profession }}</td>
+                                        <td>{{ consultant.email }}</td>
+                                        <td>{{ consultant.license_number }}</td>
+                                        <td>{{ consultant.experience }} years</td>
+                                        <td>{{ consultant.verified_at.strftime('%Y-%m-%d') if consultant.verified_at }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted">No verified consultants yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

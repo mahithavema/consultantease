@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard Settings{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="widget slide-in">
+                <div class="widget-title">
+                    <i class="fas fa-cog me-2"></i>Settings Menu
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="#general" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-globe me-2"></i>General
+                    </a>
+                    <a href="#notifications" class="list-group-item list-group-item-action">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </a>
+                    <a href="#privacy" class="list-group-item list-group-item-action">
+                        <i class="fas fa-lock me-2"></i>Privacy & Security
+                    </a>
+                    <a href="#preferences" class="list-group-item list-group-item-action">
+                        <i class="fas fa-palette me-2"></i>Preferences
+                    </a>
+                    <a href="#billing" class="list-group-item list-group-item-action">
+                        <i class="fas fa-credit-card me-2"></i>Billing
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-9">
+            <!-- General Settings -->
+            <div id="general" class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-globe me-2"></i>General Settings
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Language</h6>
+                            <p>Choose your preferred language</p>
+                        </div>
+                        <select class="form-select w-auto" id="languageSelect">
+                            <option value="en">English</option>
+                            <option value="te">తెలుగు (Telugu)</option>
+                            <option value="hi">हिन्दी (Hindi)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Time Zone</h6>
+                            <p>Set your local time zone</p>
+                        </div>
+                        <select class="form-select w-auto">
+                            <option>Asia/Kolkata (IST)</option>
+                            <option>America/New_York (EST)</option>
+                            <option>Europe/London (GMT)</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Date Format</h6>
+                            <p>Choose how dates are displayed</p>
+                        </div>
+                        <select class="form-select w-auto">
+                            <option>DD/MM/YYYY</option>
+                            <option>MM/DD/YYYY</option>
+                            <option>YYYY-MM-DD</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Notification Settings -->
+            <div id="notifications" class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-bell me-2"></i>Notification Settings
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Email Notifications</h6>
+                            <p>Receive email alerts for appointments</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>SMS Notifications</h6>
+                            <p>Receive text message reminders</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="smsNotifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Appointment Reminders</h6>
+                            <p>Get reminded 24 hours before appointment</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="reminderNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Marketing Emails</h6>
+                            <p>Receive updates and offers</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="marketingEmails">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Privacy & Security -->
+            <div id="privacy" class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-lock me-2"></i>Privacy & Security
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Two-Factor Authentication</h6>
+                            <p>Add an extra layer of security</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="twoFactor">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Profile Visibility</h6>
+                            <p>Control who can see your profile</p>
+                        </div>
+                        <select class="form-select w-auto">
+                            <option>Public</option>
+                            <option>Only Clients</option>
+                            <option>Private</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Data Export</h6>
+                            <p>Download your data</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-download me-1"></i>Export Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Preferences -->
+            <div id="preferences" class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-palette me-2"></i>Appearance Preferences
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Dark Mode</h6>
+                            <p>Switch between light and dark theme</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Compact View</h6>
+                            <p>Show more items per page</p>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="compactView">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Dashboard Layout</h6>
+                            <p>Choose your preferred layout</p>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-sm btn-outline-primary active">Grid</button>
+                            <button class="btn btn-sm btn-outline-primary">List</button>
+                            <button class="btn btn-sm btn-outline-primary">Compact</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Billing -->
+            <div id="billing" class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-credit-card me-2"></i>Billing Settings
+                </div>
+                <div class="settings-group">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Payment Method</h6>
+                            <p>Manage your payment methods</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-plus me-1"></i>Add Card
+                        </button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Invoice Settings</h6>
+                            <p>Configure invoice preferences</p>
+                        </div>
+                        <button class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-invoice me-1"></i>View Invoices
+                        </button>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h6>Subscription Plan</h6>
+                            <p>Current: Free Plan</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm">Upgrade</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-end mt-3">
+                <button class="btn btn-primary" id="saveSettingsBtn">
+                    <i class="fas fa-save me-2"></i>Save All Settings
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Dark mode toggle sync
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    const htmlElement = document.documentElement;
+    
+    if (localStorage.getItem('theme') === 'dark') {
+        darkModeToggle.checked = true;
+    }
+    
+    darkModeToggle.addEventListener('change', function() {
+        if (this.checked) {
+            htmlElement.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        } else {
+            htmlElement.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+        // Also click the floating theme toggle
+        document.getElementById('themeToggle').click();
+    });
+    
+    // Save settings
+    document.getElementById('saveSettingsBtn').addEventListener('click', function() {
+        // Get all settings
+        const settings = {
+            language: document.getElementById('languageSelect').value,
+            emailNotifications: document.getElementById('emailNotifications').checked,
+            smsNotifications: document.getElementById('smsNotifications').checked,
+            reminderNotifications: document.getElementById('reminderNotifications').checked,
+            marketingEmails: document.getElementById('marketingEmails').checked,
+            twoFactor: document.getElementById('twoFactor').checked,
+            darkMode: document.getElementById('darkModeToggle').checked,
+            compactView: document.getElementById('compactView').checked
+        };
+        
+        // Save to localStorage
+        localStorage.setItem('userSettings', JSON.stringify(settings));
+        
+        // Show success message
+        alert('Settings saved successfully!');
+        
+        // Reload to apply changes
+        location.reload();
+    });
+    
+    // Load saved settings
+    const savedSettings = localStorage.getItem('userSettings');
+    if (savedSettings) {
+        const settings = JSON.parse(savedSettings);
+        if (document.getElementById('languageSelect')) document.getElementById('languageSelect').value = settings.language || 'en';
+        if (document.getElementById('emailNotifications')) document.getElementById('emailNotifications').checked = settings.emailNotifications || true;
+        if (document.getElementById('smsNotifications')) document.getElementById('smsNotifications').checked = settings.smsNotifications || false;
+        if (document.getElementById('reminderNotifications')) document.getElementById('reminderNotifications').checked = settings.reminderNotifications || true;
+        if (document.getElementById('marketingEmails')) document.getElementById('marketingEmails').checked = settings.marketingEmails || false;
+        if (document.getElementById('twoFactor')) document.getElementById('twoFactor').checked = settings.twoFactor || false;
+        if (document.getElementById('darkModeToggle')) document.getElementById('darkModeToggle').checked = settings.darkMode || false;
+        if (document.getElementById('compactView')) document.getElementById('compactView').checked = settings.compactView || false;
+    }
+</script>
+{% endblock %}

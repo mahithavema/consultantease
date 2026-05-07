@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<h2>Search Results for "{{ query }}"</h2>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Refine Search</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('search') }}">
+                    <div class="mb-3">
+                        <label for="q" class="form-label">Keywords</label>
+                        <input type="text" class="form-control" id="q" name="q" value="{{ query }}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profession" class="form-label">Profession</label>
+                        <input type="text" class="form-control" id="profession" name="profession" placeholder="e.g., Lawyer, Doctor">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Search Again</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        {% if consultants %}
+            <p>Found {{ consultants|length }} consultant(s) matching your search.</p>
+            <div class="row">
+                {% for consultant in consultants %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h5 class="card-title">
+                                            {{ consultant.full_name }}
+                                            {% if consultant.is_verified %}
+                                                <span class="badge bg-success" style="font-size: 0.7rem;">✓ Verified</span>
+                                            {% endif %}
+                                        </h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{ consultant.profession }}</h6>
+                                    </div>
+                                    <span class="badge bg-primary">${{ consultant.hourly_rate }}/hr</span>
+                                </div>
+                                <p class="card-text mt-2">
+                                    <small class="text-muted">Experience: {{ consultant.experience }} years</small><br>
+                                    {{ consultant.bio|truncate(100) }}
+                                </p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a href="{{ url_for('consultant_profile', consultant_id=consultant.id) }}" class="btn btn-outline-primary btn-sm">View Profile</a>
+                                    {% if current_user.is_authenticated and current_user.user_type == 'client' %}
+                                        <a href="{{ url_for('book_appointment', consultant_id=consultant.id) }}" class="btn btn-primary btn-sm">Book Now</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                <h5>No consultants found</h5>
+                <p>Try different search terms or <a href="{{ url_for('list_consultants') }}">browse all consultants</a>.</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

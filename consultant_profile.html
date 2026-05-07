@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}{{ consultant.full_name }} - Profile{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="card-title">
+                    {{ consultant.full_name }}
+                    {% if consultant.is_verified %}
+                        <span class="badge bg-success" title="Verified Professional">✓ Verified</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark" title="Pending Verification">⏳ Pending Verification</span>
+                    {% endif %}
+                </h3>
+                <h5 class="card-subtitle mb-3 text-muted">{{ consultant.profession }}</h5>
+                <p class="card-text">
+                    <strong>Experience:</strong> {{ consultant.experience }} years<br>
+                    <strong>Hourly Rate:</strong> ${{ consultant.hourly_rate }}/hour<br>
+                    <strong>Phone:</strong> {{ consultant.phone }}<br>
+                    <strong>Email:</strong> {{ consultant.email }}<br>
+                    {% if consultant.is_verified %}
+                        <strong>License:</strong> {{ consultant.license_number }}<br>
+                    {% endif %}
+                </p>
+                {% if current_user.is_authenticated and current_user.user_type == 'client' %}
+                    <a href="{{ url_for('book_appointment', consultant_id=consultant.id) }}" class="btn btn-primary btn-lg w-100">Book Appointment</a>
+                {% elif not current_user.is_authenticated %}
+                    <a href="{{ url_for('login') }}" class="btn btn-primary btn-lg w-100">Login to Book</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header">
+                <h4>About</h4>
+            </div>
+            <div class="card-body">
+                <p>{{ consultant.bio }}</p>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h4>Availability</h4>
+            </div>
+            <div class="card-body">
+                {% if availability %}
+                    <div class="row">
+                        {% for slot in availability %}
+                            <div class="col-md-6 mb-2">
+                                <div class="alert alert-info mb-0">
+                                    <strong>
+                                        {% if slot.day_of_week == 0 %}Monday
+                                        {% elif slot.day_of_week == 1 %}Tuesday
+                                        {% elif slot.day_of_week == 2 %}Wednesday
+                                        {% elif slot.day_of_week == 3 %}Thursday
+                                        {% elif slot.day_of_week == 4 %}Friday
+                                        {% elif slot.day_of_week == 5 %}Saturday
+                                        {% else %}Sunday
+                                        {% endif %}
+                                    </strong><br>
+                                    {{ slot.start_time.strftime('%H:%M') }} - {{ slot.end_time.strftime('%H:%M') }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No availability slots set yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

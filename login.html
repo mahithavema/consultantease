@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-75">
+    <div class="col-md-5">
+        <div class="card fade-in-up">
+            <div class="card-header text-center">
+                <i class="fas fa-sign-in-alt fa-2x mb-2"></i>
+                <h3 class="mb-0">Welcome Back!</h3>
+                <p class="mb-0 opacity-75">Login to your account</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('login') }}">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">
+                            <i class="fas fa-user me-2"></i>Username
+                        </label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">
+                            <i class="fas fa-lock me-2"></i>Password
+                        </label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="mb-3 text-end">
+                        <a href="{{ url_for('forgot_password') }}" class="text-decoration-none">
+                            <i class="fas fa-key me-1"></i>Forgot Password?
+                        </a>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                        <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="mb-0">Don't have an account?</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary w-100 mt-2 py-2">
+                        <i class="fas fa-user-plus me-2"></i>Create New Account
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-5 d-none d-md-block">
+        <div class="text-center fade-in-up" style="animation-delay: 0.2s;">
+            <i class="fas fa-calendar-check" style="font-size: 8rem; color: white; text-shadow: 2px 2px 10px rgba(0,0,0,0.2);"></i>
+            <h2 class="text-white mt-4">ConsultantEase</h2>
+            <p class="text-white opacity-75">Your trusted platform for professional consultations</p>
+            <div class="mt-4">
+                <div class="d-flex justify-content-center gap-3">
+                    <i class="fas fa-shield-alt fa-2x text-white opacity-75"></i>
+                    <i class="fas fa-clock fa-2x text-white opacity-75"></i>
+                    <i class="fas fa-star fa-2x text-white opacity-75"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.min-vh-75 {
+    min-height: 75vh;
+}
+</style>
+{% endblock %}

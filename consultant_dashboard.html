@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}Consultant Dashboard{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-user-md me-2"></i>Welcome, {{ current_user.full_name }}!</h2>
+                <p>Manage your schedule, appointments, and availability.</p>
+            </div>
+            <div>
+                {% if current_user.is_verified %}
+                    <span class="badge bg-success fs-6 px-3 py-2">
+                        <i class="fas fa-check-circle me-1"></i>Verified Professional
+                    </span>
+                {% else %}
+                    <span class="badge bg-warning fs-6 px-3 py-2">
+                        <i class="fas fa-clock me-1"></i>Pending Verification
+                    </span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card primary">
+            <div class="stat-info">
+                <h3>{{ appointments|length }}</h3>
+                <p>Total Appointments</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-info">
+                <h3>{{ appointments|selectattr('status', 'equalto', 'scheduled')|list|length }}</h3>
+                <p>Upcoming</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-info">
+                <h3>{{ availability|length }}</h3>
+                <p>Available Slots</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-info">
+                <h3>${{ current_user.hourly_rate or 0 }}</h3>
+                <p>Hourly Rate</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Appointments Section -->
+        <div class="col-lg-7">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-calendar-alt me-2"></i>Your Appointments</h4>
+                </div>
+                <div class="card-body">
+                    {% if appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Client</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for apt in appointments %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ apt.client.full_name }}</strong><br>
+                                            <small class="text-muted">{{ apt.client.email }}</small>
+                                        </td>
+                                        <td>{{ apt.appointment_date.strftime('%b %d, %Y') }}</td>
+                                        <td>{{ apt.start_time.strftime('%I:%M %p') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if apt.status == 'scheduled' else 'secondary' }}">
+                                                {{ apt.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if apt.status == 'scheduled' %}
+                                                <a href="{{ url_for('cancel_appointment', appointment_id=apt.id) }}" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Cancel this appointment?')">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-alt fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">No appointments yet.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-5">
+            <!-- Account Settings -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-cog me-2"></i>Account Settings
+                </div>
+                <div class="quick-actions-grid">
+                    <a href="{{ url_for('edit_profile') }}" class="quick-action-item">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="{{ url_for('change_password') }}" class="quick-action-item">
+                        <i class="fas fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                </div>
+                <button type="button" class="btn btn-outline-danger w-100 mt-3" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Account
+                </button>
+            </div>
+
+            <!-- Manage Availability -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-clock me-2"></i>Manage Availability
+                </div>
+                <form method="POST" action="{{ url_for('add_availability') }}">
+                    <div class="row">
+                        <div class="col-12 mb-2">
+                            <select class="form-select" name="day" required>
+                                <option value="0">Monday</option>
+                                <option value="1">Tuesday</option>
+                                <option value="2">Wednesday</option>
+                                <option value="3">Thursday</option>
+                                <option value="4">Friday</option>
+                                <option value="5">Saturday</option>
+                                <option value="6">Sunday</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <input type="time" class="form-control" name="start_time" required>
+                        </div>
+                        <div class="col-6 mb-2">
+                            <input type="time" class="form-control" name="end_time" required>
+                        </div>
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-plus me-2"></i>Add Time Slot
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                
+                <hr>
+                
+                <h6 class="mb-3">Current Availability</h6>
+                <div class="time-slots-container">
+                    {% if availability %}
+                        {% for slot in availability %}
+                            <div class="time-slot">
+                                {% if slot.day_of_week == 0 %}Mon
+                                {% elif slot.day_of_week == 1 %}Tue
+                                {% elif slot.day_of_week == 2 %}Wed
+                                {% elif slot.day_of_week == 3 %}Thu
+                                {% elif slot.day_of_week == 4 %}Fri
+                                {% elif slot.day_of_week == 5 %}Sat
+                                {% else %}Sun
+                                {% endif %}
+                                {{ slot.start_time.strftime('%H:%M') }}
+                                <a href="{{ url_for('delete_availability', slot_id=slot.id) }}" 
+                                   class="delete-slot"
+                                   onclick="return confirm('Delete this slot?')">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center w-100">No availability slots added.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Delete Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account?</p>
+                <p class="text-danger"><strong>This action cannot be undone.</strong> All your appointments and availability slots will be permanently deleted.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('delete_account') }}">
+                    <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Find Consultants{% endblock %}
+
+{% block content %}
+<h2>Find Consultants</h2>
+
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Filter by</h5>
+            </div>
+            <div class="card-body">
+                <form method="GET" action="{{ url_for('list_consultants') }}">
+                    <div class="mb-3">
+                        <label for="profession" class="form-label">Profession</label>
+                        <input type="text" class="form-control" id="profession" name="profession" placeholder="e.g., Lawyer, Doctor">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Apply Filter</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            {% if consultants %}
+                {% for consultant in consultants %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card h-100">
+                            <div class="card-body">
+                                <h5 class="card-title">
+                                    {{ consultant.full_name }}
+                                    {% if consultant.is_verified %}
+                                        <span class="badge bg-success" style="font-size: 0.7rem;">✓ Verified</span>
+                                    {% endif %}
+                                </h5>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ consultant.profession }}</h6>
+                                <p class="card-text">
+                                    <small>Experience: {{ consultant.experience }} years</small><br>
+                                    <small>Rate: ${{ consultant.hourly_rate }}/hour</small>
+                                </p>
+                                <p class="card-text">{{ consultant.bio|truncate(100) }}</p>
+                                <a href="{{ url_for('consultant_profile', consultant_id=consultant.id) }}" class="btn btn-primary">View Profile</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        No consultants found. Please try different filters.
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

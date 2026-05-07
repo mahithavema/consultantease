@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+
+{% block title %}Client Dashboard{% endblock %}
+
+{% block content %}
+<div class="fade-in-up">
+    <!-- Welcome Banner -->
+    <div class="welcome-banner">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h2><i class="fas fa-user-circle me-2"></i>Welcome back, {{ current_user.full_name }}!</h2>
+                <p>Manage your appointments and find expert consultants easily.</p>
+            </div>
+            <div>
+                <i class="fas fa-calendar-alt fa-3x opacity-50"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card primary">
+            <div class="stat-info">
+                <h3>{{ appointments|length }}</h3>
+                <p>Total Appointments</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-calendar-check"></i>
+            </div>
+        </div>
+        <div class="stat-card success">
+            <div class="stat-info">
+                <h3>{{ appointments|selectattr('status', 'equalto', 'scheduled')|list|length }}</h3>
+                <p>Upcoming</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-clock"></i>
+            </div>
+        </div>
+        <div class="stat-card warning">
+            <div class="stat-info">
+                <h3>{{ consultants|length }}</h3>
+                <p>Available Consultants</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-users"></i>
+            </div>
+        </div>
+        <div class="stat-card danger">
+            <div class="stat-info">
+                <h3>{{ appointments|selectattr('status', 'equalto', 'cancelled')|list|length }}</h3>
+                <p>Cancelled</p>
+            </div>
+            <div class="stat-icon">
+                <i class="fas fa-times-circle"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Appointments Section -->
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-calendar-alt me-2"></i>Your Appointments</h4>
+                </div>
+                <div class="card-body">
+                    {% if appointments %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Consultant</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for apt in appointments %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ apt.consultant.full_name }}</strong><br>
+                                            <small class="text-muted">{{ apt.consultant.profession }}</small>
+                                        </td>
+                                        <td>{{ apt.appointment_date.strftime('%b %d, %Y') }}</td>
+                                        <td>{{ apt.start_time.strftime('%I:%M %p') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ 'success' if apt.status == 'scheduled' else 'secondary' }}">
+                                                {{ apt.status }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if apt.status == 'scheduled' %}
+                                                <a href="{{ url_for('cancel_appointment', appointment_id=apt.id) }}" 
+                                                   class="btn btn-sm btn-outline-danger"
+                                                   onclick="return confirm('Cancel this appointment?')">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-alt fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">No appointments yet.</p>
+                            <a href="{{ url_for('search') }}" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Book Your First Appointment
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                </div>
+                <div class="quick-actions-grid">
+                    <a href="{{ url_for('search') }}" class="quick-action-item">
+                        <i class="fas fa-search"></i>
+                        <span>Find Consultants</span>
+                    </a>
+                    <a href="{{ url_for('list_consultants') }}" class="quick-action-item">
+                        <i class="fas fa-users"></i>
+                        <span>All Consultants</span>
+                    </a>
+                    <a href="{{ url_for('edit_profile') }}" class="quick-action-item">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Edit Profile</span>
+                    </a>
+                    <a href="{{ url_for('change_password') }}" class="quick-action-item">
+                        <i class="fas fa-key"></i>
+                        <span>Change Password</span>
+                    </a>
+                </div>
+                <button type="button" class="btn btn-outline-danger w-100 mt-3" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    <i class="fas fa-trash-alt me-2"></i>Delete Account
+                </button>
+            </div>
+
+            <!-- Featured Consultants -->
+            <div class="widget">
+                <div class="widget-title">
+                    <i class="fas fa-star me-2"></i>Featured Consultants
+                </div>
+                {% if consultants[:3] %}
+                    {% for consultant in consultants[:3] %}
+                    <div class="appointment-item">
+                        <div class="d-flex align-items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-user-circle fa-2x" style="color: #667eea;"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-0">
+                                    {{ consultant.full_name }}
+                                    {% if consultant.is_verified %}
+                                        <i class="fas fa-check-circle text-success" style="font-size: 12px;"></i>
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted">{{ consultant.profession }}</small><br>
+                                <small class="text-success">${{ consultant.hourly_rate }}/hr</small>
+                            </div>
+                            <a href="{{ url_for('consultant_profile', consultant_id=consultant.id) }}" class="btn btn-sm btn-primary">
+                                Book <i class="fas fa-arrow-right ms-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">No consultants available.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Delete Account</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete your account?</p>
+                <p class="text-danger"><strong>This action cannot be undone.</strong> All your appointments will be permanently deleted.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{{ url_for('delete_account') }}">
+                    <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
