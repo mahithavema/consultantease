@@ -12,8 +12,4 @@ A web-based consultant appointment management system.
 - SQLite
 - HTML, CSS, JavaScript
 
-## How to Run
 
-```bash
-pip install -r requirements.txt
-python app.py
